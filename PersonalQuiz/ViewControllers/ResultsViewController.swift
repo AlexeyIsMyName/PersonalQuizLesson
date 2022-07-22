@@ -12,31 +12,36 @@ class ResultsViewController: UIViewController {
     @IBOutlet var answerLabel: UILabel!
     @IBOutlet var definitionAnswerLabel: UILabel!
     
-    var chosenAnswers: [Answer]!
+    var answers: [Answer]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateUI()
+        
+        navigationItem.hidesBackButton = true
+        updateResult()
     }
 
 }
 
+// MARK: - Private Methods
 extension ResultsViewController {
-    private func updateUI() {
-        let animalType = getAnimalType()
-        answerLabel.text = "Вы - \(animalType?.rawValue ?? "🐶")"
-        definitionAnswerLabel.text = animalType?.definition
-    }
-    
-    private func getAnimalType() -> AnimalType? {
+    private func updateResult() {
         var countAnimals: [AnimalType: Int] = [:]
+        let animals = answers.map { $0.type }
         
-        chosenAnswers.forEach { answer in
-            countAnimals[answer.type] = (countAnimals[answer.type] ?? 0) + 1
+        animals.forEach { animal in
+            countAnimals[animal] = (countAnimals[animal] ?? 0) + 1
         }
         
         let sortedAnimals = countAnimals.sorted { $0.value > $1.value }
         
-        return sortedAnimals.first?.key
+        guard let animalResult = sortedAnimals.first?.key else { return }
+        
+        updateUI(with: animalResult)
+    }
+    
+    private func updateUI(with animal: AnimalType) {
+        answerLabel.text = "Вы - \(animal.rawValue)"
+        definitionAnswerLabel.text = animal.definition
     }
 }
