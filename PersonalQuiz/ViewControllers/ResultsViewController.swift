@@ -26,22 +26,23 @@ class ResultsViewController: UIViewController {
 // MARK: - Private Methods
 extension ResultsViewController {
     private func updateResult() {
-        var countAnimals: [AnimalType: Int] = [:]
-        let animals = answers.map { $0.type }
+//        var countAnimals: [AnimalType: Int] = [:]
+//        let animals = answers.map { $0.type }
+//        animals.forEach { animal in
+//            countAnimals[animal] = (countAnimals[animal] ?? 0) + 1
+//        }
+//        let sortedAnimals = countAnimals.sorted { $0.value > $1.value }
+//        guard let animalResult = sortedAnimals.first?.key else { return }
         
-        animals.forEach { animal in
-            countAnimals[animal] = (countAnimals[animal] ?? 0) + 1
-        }
+        let animalResult2 = Dictionary(grouping: answers) { $0.type }
+            .sorted { $0.value.count > $1.value.count }
+            .first?.key
         
-        let sortedAnimals = countAnimals.sorted { $0.value > $1.value }
-        
-        guard let animalResult = sortedAnimals.first?.key else { return }
-        
-        updateUI(with: animalResult)
+        updateUI(with: animalResult2)
     }
     
-    private func updateUI(with animal: AnimalType) {
-        answerLabel.text = "Вы - \(animal.rawValue)"
-        definitionAnswerLabel.text = animal.definition
+    private func updateUI(with animal: AnimalType?) {
+        answerLabel.text = "Вы - \(animal?.rawValue ?? "🐶")"
+        definitionAnswerLabel.text = animal?.definition
     }
 }
