@@ -24,12 +24,14 @@ class QuestionsViewController: UIViewController {
     
     @IBOutlet var rangedAnswerLabels: [UILabel]!
     
+    private let questions = Question.getQuestions()
+    private var questionIndex = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         updateUI()
     }
     
-
     /*
     // MARK: - Navigation
 
@@ -53,9 +55,32 @@ class QuestionsViewController: UIViewController {
 // MARK: - Private Methods
 extension QuestionsViewController {
     private func updateUI() {
+        // Hide everything
         for stackView in [singleAnswerStackView, multipleAnswerStackView, rangedAnswerStackView] {
             stackView?.isHidden = true
         }
+        
+        // get current question
+        let currentQuestion = questions[questionIndex]
+        
+        // set current question for question label
+        questionLabel.text = currentQuestion.text
+        
+        // calculate progress
+        let totalProgress = Float(questionIndex) / Float(questions.count)
+        
+        // set progress for questionProgressView
+        questionProgressView.setProgress(totalProgress, animated: true)
+        
+        // set navigation title
+        title = "Вопрос № \(questionIndex + 1) из \(questions.count)"
+        
+        // show stacks corresponding to question type
+        showCurrentAnswers(for: currentQuestion.type)
+    }
+    
+    private func showCurrentAnswers(for: ResponseType) {
+        
     }
 }
 
