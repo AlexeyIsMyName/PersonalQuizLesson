@@ -8,22 +8,35 @@
 import UIKit
 
 class ResultsViewController: UIViewController {
+    
+    @IBOutlet var answerLabel: UILabel!
+    @IBOutlet var definitionAnswerLabel: UILabel!
+    
+    var chosenAnswers: [Answer]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateUI()
+    }
 
-        // Do any additional setup after loading the view.
+}
+
+extension ResultsViewController {
+    private func updateUI() {
+        let animalType = getAnimalType()
+        answerLabel.text = "Вы - \(animalType?.rawValue ?? "🐶")"
+        definitionAnswerLabel.text = animalType?.definition
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func getAnimalType() -> AnimalType? {
+        var countAnimals: [AnimalType: Int] = [:]
+        
+        chosenAnswers.forEach { answer in
+            countAnimals[answer.type] = (countAnimals[answer.type] ?? 0) + 1
+        }
+        
+        let sortedAnimals = countAnimals.sorted { $0.value > $1.value }
+        
+        return sortedAnimals.first?.key
     }
-    */
-
 }

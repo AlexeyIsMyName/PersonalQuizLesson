@@ -15,7 +15,7 @@ class QuestionsViewController: UIViewController {
         didSet {
             let answerCount = Float(currentAnsers.count - 1)
             answerRangedSlider.maximumValue = answerCount
-            answerRangedSlider.value = answerRangedSlider.maximumValue / 2
+            answerRangedSlider.value = answerCount / 2
         }
     }
     
@@ -42,15 +42,11 @@ class QuestionsViewController: UIViewController {
         updateUI()
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if let resultsVC = segue.destination as? ResultsViewController {
+            resultsVC.chosenAnswers = chosenAnswers
+        }
     }
-    */
     
     @IBAction func singleAnswerButtonPressed(_ sender: UIButton) {
         guard let buttonIndex = singleAnswerButtons.firstIndex(of: sender) else { return }
