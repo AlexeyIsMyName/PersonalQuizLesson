@@ -11,7 +11,13 @@ class QuestionsViewController: UIViewController {
     
     @IBOutlet var questionLabel: UILabel!
     @IBOutlet var questionProgressView: UIProgressView!
-    @IBOutlet var answerRangedSlider: UISlider!
+    @IBOutlet var answerRangedSlider: UISlider! {
+        didSet {
+            let answerCount = Float(currentAnsers.count - 1)
+            answerRangedSlider.maximumValue = answerCount
+            answerRangedSlider.value = answerRangedSlider.maximumValue / 2
+        }
+    }
     
     @IBOutlet var singleAnswerStackView: UIStackView!
     @IBOutlet var multipleAnswerStackView: UIStackView!
@@ -50,6 +56,7 @@ class QuestionsViewController: UIViewController {
         guard let buttonIndex = singleAnswerButtons.firstIndex(of: sender) else { return }
         let currentAnswer = currentAnsers[buttonIndex]
         chosenAnswers.append(currentAnswer)
+        
         nextQuestion()
     }
     
@@ -59,10 +66,15 @@ class QuestionsViewController: UIViewController {
                 chosenAnswers.append(answer)
             }
         }
+        
         nextQuestion()
     }
     
     @IBAction func rangedAnswerButtonPressed() {
+        let index = lrintf(answerRangedSlider.value)
+        chosenAnswers.append(currentAnsers[index])
+        
+        nextQuestion()
     }
 }
 
@@ -100,7 +112,7 @@ extension QuestionsViewController {
         case .multiple:
             showMultipleSteckView(with: currentAnsers)
         case .ranged:
-            break
+            showRangedSteckView(with: currentAnsers)
         }
     }
     
@@ -123,6 +135,12 @@ extension QuestionsViewController {
         for (label, answer) in zip(multipleAnswerLabels, answers) {
             label.text = answer.text
         }
+    }
+    
+    private func showRangedSteckView(with answers: [Answer]) {
+        rangedAnswerStackView.isHidden = false
+        rangedAnswerLabels.first?.text = answers.first?.text
+        rangedAnswerLabels.last?.text = answers.last?.text
     }
     
     private func nextQuestion() {
