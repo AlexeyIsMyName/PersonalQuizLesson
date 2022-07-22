@@ -54,6 +54,12 @@ class QuestionsViewController: UIViewController {
     }
     
     @IBAction func multipleAnswerButtonPressed() {
+        for (multipleSwitch, answer) in zip(multipleAnswerSwitches, currentAnsers) {
+            if multipleSwitch.isOn {
+                chosenAnswers.append(answer)
+            }
+        }
+        nextQuestion()
     }
     
     @IBAction func rangedAnswerButtonPressed() {
@@ -92,7 +98,7 @@ extension QuestionsViewController {
         case .single:
             showSingleStackView(with: currentAnsers)
         case .multiple:
-            break
+            showMultipleSteckView(with: currentAnsers)
         case .ranged:
             break
         }
@@ -112,7 +118,11 @@ extension QuestionsViewController {
     }
     
     private func showMultipleSteckView(with answers: [Answer]) {
+        multipleAnswerStackView.isHidden = false
         
+        for (label, answer) in zip(multipleAnswerLabels, answers) {
+            label.text = answer.text
+        }
     }
     
     private func nextQuestion() {
