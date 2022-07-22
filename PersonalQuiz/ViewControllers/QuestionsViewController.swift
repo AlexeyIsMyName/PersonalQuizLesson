@@ -26,6 +26,10 @@ class QuestionsViewController: UIViewController {
     
     private let questions = Question.getQuestions()
     private var questionIndex = 0
+    private var chosenAnswers: [Answer] = []
+    private var currentAnsers: [Answer] {
+        questions[questionIndex].answers
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +47,10 @@ class QuestionsViewController: UIViewController {
     */
     
     @IBAction func singleAnswerButtonPressed(_ sender: UIButton) {
+        guard let buttonIndex = singleAnswerButtons.firstIndex(of: sender) else { return }
+        let currentAnswer = currentAnsers[buttonIndex]
+        chosenAnswers.append(currentAnswer)
+        nextQuestion()
     }
     
     @IBAction func multipleAnswerButtonPressed() {
@@ -79,8 +87,43 @@ extension QuestionsViewController {
         showCurrentAnswers(for: currentQuestion.type)
     }
     
-    private func showCurrentAnswers(for: ResponseType) {
+    private func showCurrentAnswers(for type: ResponseType) {
+        switch type {
+        case .single:
+            showSingleStackView(with: currentAnsers)
+        case .multiple:
+            break
+        case .ranged:
+            break
+        }
+    }
+    
+    /// Show single stack view
+    ///
+    /// - Parameter answers: array of answers
+    ///
+    /// Show single stack view with answers for current question
+    private func showSingleStackView(with answers: [Answer]) {
+        singleAnswerStackView.isHidden = false
         
+        for (button, answer) in zip(singleAnswerButtons, answers) {
+            button.setTitle(answer.text, for: .normal)
+        }
+    }
+    
+    private func showMultipleSteckView(with answers: [Answer]) {
+        
+    }
+    
+    private func nextQuestion() {
+        questionIndex += 1
+        
+        if questionIndex < questions.count {
+            updateUI()
+            return
+        }
+        
+        performSegue(withIdentifier: "showResult", sender: nil)
     }
 }
 
